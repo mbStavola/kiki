@@ -1,0 +1,10 @@
+[package]
+name = "kiki"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+structopt = "0.3.2"
+tokio = "=0.2.0-alpha.1"
+async-trait = "0.1.13"
+failure = "0.1.5"
