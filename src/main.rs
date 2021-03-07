@@ -5,10 +5,7 @@ use std::str::FromStr;
 use structopt::StructOpt;
 use tokio::runtime::Runtime;
 
-use crate::{
-    error::KikiError,
-    protocol::Connection
-};
+use crate::{error::KikiError, protocol::Connection};
 use std::net::SocketAddr;
 
 mod error;
@@ -38,6 +35,7 @@ pub enum Protocol {
 
 impl FromStr for Protocol {
     type Err = KikiError;
+
     fn from_str(protocol: &str) -> Result<Self, Self::Err> {
         match protocol {
             "tcp" => Ok(Protocol::Tcp),
@@ -60,7 +58,7 @@ fn main() -> Result<(), KikiError> {
         Mode::Send { message } => {
             let future = connection.send(&app.address, &message);
             runtime.block_on(future)
-        },
+        }
         Mode::Listen => {
             let future = connection.listen(&app.address);
             runtime.block_on(future)

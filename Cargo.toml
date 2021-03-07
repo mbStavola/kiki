@@ -4,7 +4,10 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-structopt = "0.3.2"
-tokio = "=0.2.0-alpha.1"
-async-trait = "0.1.13"
-failure = "0.1.5"
+structopt = "0.3.21"
+async-trait = "0.1.45"
+failure = "0.1.8"
+
+[dependencies.tokio]
+version = "1.2.0"
+features = [ "full" ]
