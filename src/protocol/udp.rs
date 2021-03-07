@@ -2,10 +2,7 @@ use tokio::net::UdpSocket;
 
 use async_trait::async_trait;
 
-use crate::{
-    error::KikiError,
-    protocol::Connection
-};
+use crate::{error::KikiError, protocol::Connection};
 use std::net::SocketAddr;
 
 pub struct Udp;
@@ -13,15 +10,15 @@ pub struct Udp;
 #[async_trait]
 impl Connection for Udp {
     async fn listen(&self, address: &SocketAddr) -> Result<(), KikiError> {
-        let mut listener = UdpSocket::bind(address).map_err(|_| {
-            KikiError::AddressConnectionError(address.clone())
-        })?;
+        let listener = UdpSocket::bind(address)
+            .await
+            .map_err(|_| KikiError::AddressConnectionError(address.clone()))?;
 
         loop {
             let mut buffer = vec![0; 1024];
             match listener.recv_from(&mut buffer).await.expect("Read") {
                 (0, _) => break,
-                (n, _) => n
+                (n, _) => n,
             };
             let message = String::from_utf8(buffer).expect("Parse");
             println!("{}", message);
@@ -35,12 +32,17 @@ impl Connection for Udp {
             "0.0.0.0:0"
         } else {
             "[::]:0"
-        }.parse().expect("Parse");
+        }
+        .parse()
+        .expect("Parse");
 
-        let mut socket = UdpSocket::bind(&local_address).map_err(|_| {
-            KikiError::AddressConnectionError(address.clone())
-        })?;
-        socket.send_to(message.as_bytes(), address).await.expect("Write");
+        let socket = UdpSocket::bind(&local_address)
+            .await
+            .map_err(|_| KikiError::AddressConnectionError(address.clone()))?;
+        socket
+            .send_to(message.as_bytes(), address)
+            .await
+            .expect("Write");
         Ok(())
     }
 }
